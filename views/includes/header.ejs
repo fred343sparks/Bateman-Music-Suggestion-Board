@@ -1,0 +1,23 @@
+<header class="header">
+        
+        <nav>
+            <ul>
+                <li>
+                    <h2>
+                        <a class="header_title" href="/">
+                            <span>BATEMAN MUSIC SUGGESTION BOARD</span>
+                        </a>
+                    </h2>
+                    <h2><a href="/suggestions" class="header_nav">SUGGESTIONS</a></h2>
+                    <h2><a href="/dashboard" class="header_nav">DASHBOARD</a></h2>
+                    <% if (user) { %>
+                        <h2><a href="/create-post" class="header_nav">CREATE POST</a></h2>
+                        <h2><a href="/logout"  class="header_nav">LOG OUT</a></h2>
+                    <% } else { %>
+                        <h2><a href="/login" class="header_nav">LOG IN</a></h2>
+                        <h2><a href="/signup" class="header_nav_signup">SIGN UP</a></h2>
+                    <% } %>
+                </li>
+            </ul>
+        </nav>
+</header>

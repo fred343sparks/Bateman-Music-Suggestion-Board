@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head') %>
+<body class = "create-post">
+    <%- include('includes/header') %>
+    
+   <main>
+        <form action="/create-post" method="POST">
+           <% errors.forEach(error => { %>
+            <p class="notice"><%= error %></p>
+           <% }) %> 
+        <fieldset>
+            <legend>CREATE A NEW POST</legend>
+            <label for="title"><small>TITLE</small></label>
+            <input type="text" id="title" name="title" autocomplete="off">
+
+            <label for="genere"><small>GENERE</small></label>
+            <input type="text" id="genere" name="genere" autocomplete="off">
+            
+            <label for="creator"><small>CREATED BY</small></label>
+            <input type="text" id="creator" name="creator" autocomplete="off"> 
+
+            <label for="video"><small>YOUTUBE LINK</small></label>
+            <input type="text" id="video" name="video" autocomplete="off">
+            
+            <label for="body"><small>DESCRIPTION</small></label>
+            <textarea name="body" id="body"></textarea>
+
+            <br/>
+
+            <button>Sumbit Music Suggestion</button>
+        </fieldset>
+        </form>
+    </main>
+
+    <%- include('includes/footer') %>
+</body>
+</html>

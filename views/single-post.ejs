@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head') %>
+<body class="posts">
+    <%- include('includes/header') %>
+    
+   <main>
+        <h1><%= post.title %></h1>
+
+    <article>
+        <small>posted by <%= post.username %> on <%= new Date(post.createdDate).getMonth() + 1 %>/<%= new Date(post.createdDate).getMonth() %>/<%= new Date(post.createdDate).getFullYear() %> </small>
+        <div>
+            <%- filterUserHTML(post.genere) %>
+        </div>
+        <div>
+            <%- filterUserHTML(post.creator) %>
+        </div>
+        <div>
+            <iframe  class="video" width="560" height="315" src="https://www.youtube.com/embed/<%- post.video.slice(-11)%>" title="" frameBorder="0"   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen><br>Powered by <a href="https://youtubeembedcode.com">how to embed a youtube video</a> and <a href="https://casinomga.se/">nya casinon utan spelpaus mga</a></iframe></p>
+        </div>
+        <div>
+            <%- filterUserHTML(post.body) %>
+        </div>
+    </article>
+    <% if (isAuthor){ %>
+        <a href="/edit-post/<%= post.id %>" class="button">Edit Post</a>
+
+        <form style="display: inline;" action="/delete-post/<%= post.id %>" method="POST">
+            <button class="deletebutton">Delete Post</button>
+        </form>
+    <% } %>
+    </main>
+
+    <%- include('includes/footer') %>
+</body>
+</html>

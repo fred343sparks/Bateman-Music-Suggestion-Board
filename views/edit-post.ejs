@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head') %>
+<body class = "create-post">
+    <%- include('includes/header') %>
+    
+   <main>
+        <form action="/edit-post/<%= post.id %>" method="POST">
+           <% errors.forEach(error => { %>
+            <p class="notice"><%= error %></p>
+           <% }) %> 
+        <fieldset>
+            <legend>EDIT EXISITING POST</legend>
+            <label for="title"><small>Title</small></label>
+            <input type="text" value="<%= post.title %>" id="title" name="title" autocomplete="off">
+
+             <label for="genere"><small>GENERE</small></label>
+            <input type="text" value="<%= post.genere %>" id="genere" name="genere" autocomplete="off">
+            
+            <label for="creator"><small>CREATED BY</small></label>
+            <input type="text" value="<%= post.creator %>" id="creator" name="creator" autocomplete="off"> 
+
+            <label for="video"><small>YOUTUBE LINK</small></label>
+            <input type="text" value="<%= post.video %>" id="video" name="video" autocomplete="off">
+            
+            <label for="body"><small>DESCRIPTION</small></label>
+            <textarea name="body" id="body"><%= post.body %></textarea>
+
+            <br/>
+
+            <button>Save Changes</button>
+        </fieldset>
+        </form>
+    </main>
+
+    <%- include('includes/footer') %>
+</body>
+</html>

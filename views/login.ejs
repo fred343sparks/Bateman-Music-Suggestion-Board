@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head') %>
+<body class="login">
+    <%- include('includes/header') %>
+    
+   <main>
+        <form action="/login" method="POST" >
+           <% errors.forEach(error => { %>
+            <p class="notice"><%= error %></p>
+           <% }) %> 
+        <div>
+        <fieldset class="logon">
+            <legend>LOG IN</legend>
+            <label for="username"><small>Username</small></label>
+            <input type="text" id="username" name="username" autocomplete="off">
+            <br>
+            <label for="password"><small>Password</small></label>
+            <input type="password" id="password" name="password" autocomplete="off">
+
+            <br/>
+
+            <button class="logbutton">Log In</button>
+            <div>
+                <h3>Are You Not A User</h3>
+                <a href="/signup">SIGN UP</a>
+            </div>
+        </fieldset>
+        </form>
+        
+    </div>
+    </main>
+
+    <%- include('includes/footer') %>
+</body>
+</html>

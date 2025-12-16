@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head') %>
+<body class="homepage">
+    <%- include('includes/header') %>
+    <main>
+        <form action="/register" method="POST">
+           <% errors.forEach(error => { %>
+            <p class="notice"><%= error %></p>
+           <% }) %> 
+        <fieldset class="logon">
+            <legend>CREATE AN ACCOUNT</legend>
+            <label for="username"><small>Username</small></label>
+            <input type="text" id="username" name="username" autocomplete="off">
+            <br>
+            <label for="password"><small>Password</small></label>
+            <input type="password" id="password" name="password" autocomplete="off">
+
+            <br/>
+
+            <button class="logbutton">Sign Up</button>
+            <div>
+            <h3>Are You A Current User</h3>
+            <a href="/login">LOG IN</a>
+        </div>
+        </fieldset>
+        
+        </form>
+        
+    </main>
+
+    <%- include('includes/footer') %>
+</body>
+</html>
