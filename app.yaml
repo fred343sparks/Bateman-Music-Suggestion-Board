@@ -1,0 +1,6 @@
+runtime: custom
+env: flex
+service: bateman-music-board
+
+# Use the Dockerfile in the repository for deployment. App Engine flexible
+# will build and run the container using the Dockerfile.
