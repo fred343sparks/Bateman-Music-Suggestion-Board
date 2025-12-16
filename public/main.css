@@ -140,17 +140,18 @@ article{
     /*background-image: url('assets/background-grid.svg');*/
     font-family: "Rubik", sans-serif;
     text-align: center;
-    display: block;
     text-decoration: none;
     
+}
+
+.suggestions ul{
+    margin: 20%;
 }
 
 .suggestions ul li{
     text-decoration: none;
     color: black;
     background-color: white;
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
     padding: 40px;
     max-width: 560px;
@@ -228,20 +229,23 @@ main { /* Assuming your main content is within a <main> tag */
 
 }
 
-.mainp-text{
-    display: flex;
-    position: absolute;
-    justify-content: center;
-    align-items: center;
+.mainp-text {
+    right: 100px;
 }
 
-.mainp-text p {
+.mainp-text p{
     position: absolute;
-    bottom: 200px;
-    right: 180px;
+    bottom: 50px;
+    right: 450px;
     font-size: 30px;
 }
 
+.secondaryp-text p{
+    position: absolute;
+    bottom: 200px;
+    right: 50px;
+    font-size: 30px;
+}
 
 .secondary{
     margin-left: 15px;
@@ -324,6 +328,20 @@ nav ul {
     left: 16px;
     font-size: 40px;
 }
+
+    .mainp-text p{
+        position: absolute;
+        bottom: 50px;
+        right: 80px;
+        font-size: 30px;
+    }
+
+    .secondaryp-text p{
+        position: absolute;
+        bottom: 100px;
+        right: 20px;
+        font-size: 30px;
+    }
 
 .dashboard li {
     text-decoration: none;
