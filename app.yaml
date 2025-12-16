@@ -1,5 +1,6 @@
-runtime: custom
-env: flex
+runtime: nodejs24
+env: standard
+instance_class: F1
 # The first service deployed to a new App Engine app must be `default`.
 # Set the service to `default` (or remove this field) so `gcloud app deploy`
 # creates the default service on first upload.
