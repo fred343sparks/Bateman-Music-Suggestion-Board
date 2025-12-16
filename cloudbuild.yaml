@@ -10,7 +10,7 @@ steps:
     args: ['test']
     
   # Step 3: Deploy to App Engine (uses the repo's Dockerfile because app.yaml
-  # specifies a custom runtime with flexible environment).
+  # specifies a custom runtime with flexible environment)
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args: ['-c', 'gcloud app deploy app.yaml --project=$PROJECT_ID --version=$SHORT_SHA --quiet']
