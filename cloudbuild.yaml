@@ -1,11 +1,11 @@
 steps:
   # Step 1: Install dependencies
-  - name: 'node:18'
+  - name: 'node:24'
     entrypoint: npm
     args: ['ci']
     
   # Step 2: Run tests (optional - adjust based on your testing setup)
-  - name: 'node:18'
+  - name: 'node:24'
     entrypoint: npm
     args: ['test']
     
