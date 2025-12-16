@@ -13,7 +13,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest', '.']
       
-  # Step 4: Push image to Container Registry
+  # Step 4: Push image to Container Registry Using Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA']
       
