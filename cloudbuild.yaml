@@ -4,7 +4,7 @@ steps:
     entrypoint: npm
     args: ['ci']
     
-  # Step 2: :) Run tests (optional - adjust based on your testing setup)
+  # Step 2: Run tests (optional - adjust based on your testing setup)
   - name: 'node:18'
     entrypoint: npm
     args: ['test']
