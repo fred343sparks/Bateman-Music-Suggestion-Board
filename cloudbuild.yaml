@@ -19,7 +19,7 @@ steps:
       
   # Step 5: Deploy to Cloud Run on service account.
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['run', 'deploy', '${_SERVICE_NAME}', '--image', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA', '--region', '${_REGION}', '--platform', 'managed', '--allow-unauthenticated']
+    args: ['app', 'deploy', '--image', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA', '--region', '${_REGION}', '--platform', 'managed', '--quiet']
 
 images:
   - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA'
