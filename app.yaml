@@ -7,4 +7,4 @@ instance_class: F1
 service: default
 
 # Use the Dockerfile in the repository for deployment. App Engine flexible
-# will build and run the container using the Dockerfile.
+# will build and run the container using the Dockerfile
