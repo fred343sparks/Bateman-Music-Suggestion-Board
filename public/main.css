@@ -42,6 +42,8 @@ article{
     border-radius: 5px;
     cursor: pointer;
     font-family: "Rubik", sans-serif;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .logon{
@@ -141,11 +143,10 @@ article{
     font-family: "Rubik", sans-serif;
     text-align: center;
     text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
-}
-
-.suggestions ul{
-    margin: 20%;
 }
 
 .suggestions ul li{
