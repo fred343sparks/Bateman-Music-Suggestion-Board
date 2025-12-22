@@ -1,21 +1,31 @@
 runtime: nodejs24
 env: standard
 instance_class: F1
+
 # The first service deployed to a new App Engine app must be `default`.
 # Set the service to `default` (or remove this field) so `gcloud app deploy`
 # creates the default service on first upload.
 service: default
 
-# Cloud SQL instance connection name (PROJECT:REGION:INSTANCE_NAME)
-# Set this and the DB_* env vars in deployment or here for quick testing.
+# Replace the placeholder below with your Cloud SQL instance connection name
+# Format: PROJECT_ID:REGION:INSTANCE_NAME
 beta_settings:
-	cloud_sql_instances: "PROJECT:REGION:INSTANCE_NAME"
+  cloud_sql_instances: "PROJECT_ID:REGION:INSTANCE_NAME"
 
+# Environment variables for DB connection. For production, prefer Secret Manager
+# and reference secrets through the Cloud Console rather than storing them here.
 env_variables:
-	DB_USER: 'root'
-	DB_PASS: 'REPLACE_WITH_PASSWORD'
-	DB_NAME: 'batemanboard'
-	INSTANCE_CONNECTION_NAME: 'PROJECT:REGION:INSTANCE_NAME'
+  DB_USER: "root"
+  DB_PASS: "fappah"
+  DB_NAME: "batemanboard"
+  INSTANCE_CONNECTION_NAME: "PROJECT_ID:REGION:INSTANCE_NAME"
 
-# Note: For local development use the Cloud SQL Auth Proxy or set DB_HOST to
-# 127.0.0.1 and run a local MySQL instance.
+# Local dev notes:
+# - To develop locally with Cloud SQL, run the Cloud SQL Auth Proxy and set
+#   DB_HOST=127.0.0.1 and DB_PORT=3306 in your environment.
+# - If you deploy to App Engine Flexible or use a private IP for your Cloud SQL
+#   instance, use DB_HOST and DB_PORT instead of the Unix socket.
+# Security notes:
+# - Grant the App Engine default service account the "Cloud SQL Client" role.
+# - Store DB credentials in Secret Manager and load them via runtime config
+#   or the Cloud Console instead of committing them to source control.
