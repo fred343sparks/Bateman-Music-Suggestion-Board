@@ -22,8 +22,8 @@ const poolConfig = {
 // Ignore un-replaced placeholder values like "PROJECT_ID:REGION:INSTANCE_NAME".
 if (
     process.env.INSTANCE_CONNECTION_NAME &&
-    !process.env.INSTANCE_CONNECTION_NAME.includes('PROJECT_ID') &&
-    !process.env.INSTANCE_CONNECTION_NAME.includes('INSTANCE_NAME')
+    !process.env.INSTANCE_CONNECTION_NAME.includes('project-fcfa687c-61c0-40b2-a8f') &&
+    !process.env.INSTANCE_CONNECTION_NAME.includes('free-trial-first-project')
 ) {
     poolConfig.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
 } else if (process.env.DB_HOST) {
