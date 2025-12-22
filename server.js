@@ -8,12 +8,26 @@ const express = require("express");
 const { stat } = require("fs");
 const mysql = require("mysql2")
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'fappah',
-    database: 'batemanboard'
-}).promise();
+// Configure DB connection from environment for App Engine / local dev
+const poolConfig = {
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || 'fappah',
+    database: process.env.DB_NAME || 'batemanboard',
+    waitForConnections: true,
+    connectionLimit: 5,
+    queueLimit: 0
+};
+
+// If running on App Engine with Cloud SQL, prefer the Unix socket path
+if (process.env.INSTANCE_CONNECTION_NAME) {
+    poolConfig.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
+} else if (process.env.DB_HOST) {
+    poolConfig.host = process.env.DB_HOST;
+} else {
+    poolConfig.host = 'localhost';
+}
+
+const pool = mysql.createPool(poolConfig).promise();
 
 //database setup
 /* SQLITE CODE TO CREATE TABLES BEING REPLACED WITH MYSQL
@@ -221,7 +235,7 @@ app.post("/edit-post/:id", mustBeLoggedIn, async (req,res) => {
         return res.render("edit-post", {errors} )
     }
 
-    await pool.query("UPDATE posts SET title = ?, body = ? WHERE id = ?", [req.body.title, req.body.body, req.params.id]);
+    await pool.query("UPDATE posts SET title = ?, genere = ?, creator = ?, video = ?, body = ? WHERE id = ?", [req.body.title, req.body.genere, req.body.creator, req.body.video, req.body.body, req.user.userid, new Date().toISOString()]);
 
     res.redirect(`/post/${req.params.id}`)
 
