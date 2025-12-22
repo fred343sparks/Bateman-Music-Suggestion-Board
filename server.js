@@ -6,10 +6,17 @@ const bycrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const { stat } = require("fs");
-const db = require("better-sqlite3")("ourApp.db");
-db.pragma("journal_mode = WAL");
+const mysql = require("mysql2")
+
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: 'fappah',
+    database: 'batemanboard'
+}).promise();
 
 //database setup
+/* SQLITE CODE TO CREATE TABLES BEING REPLACED WITH MYSQL
 const createTables = db.transaction(() => {
     db.prepare(`
         CREATE TABLE IF NOT EXISTS users (
@@ -35,7 +42,7 @@ const createTables = db.transaction(() => {
 })
 
 createTables();
-
+*/
 
 //Datasbase setup end
 
@@ -80,18 +87,17 @@ app.get("/", (req, res) => {
     res.render("homepage");
 })
 
-app.get("/suggestions",  (req, res) => {
-    const postsStatment= db.prepare("SELECT * FROM posts ORDER BY createdDate DESC")
-    const posts = postsStatment.all()
-    return res.render("suggestions", { posts })
+app.get("/suggestions",  async (req, res) => {
+    const [posts] = await pool.query("SELECT * FROM posts ORDER BY createdDate DESC");
+    console.log(posts);
+    return res.render("suggestions", { posts });
 })
 
 
-app.get("/dashboard",  (req, res) => {
+app.get("/dashboard",  async (req, res) => {
     if(req.user){
-        const postsStatment= db.prepare("SELECT * FROM posts WHERE authorid = ? ORDER BY createdDate DESC")
-        const posts = postsStatment.all(req.user.userid)
-        return res.render("dashboard", { posts })
+        const [posts] = await pool.query("SELECT * FROM posts WHERE authorid = ? ORDER BY createdDate DESC", [req.user.userid]);
+        return res.render("dashboard", { posts });
     }
     return res.redirect("/login");
 })
@@ -109,7 +115,7 @@ app.get("/login", (req, res) => {
     res.render("login");
 })
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     let errors = [];
 
     if(typeof req.body.username !== "string") req.body.username.length = ""
@@ -122,8 +128,8 @@ app.post("/login", (req, res) => {
         return  res.render("login", {errors});
     }
 
-    const userInQuestionStatement = db.prepare("SELECT * FROM users WHERE username = ?");
-    const userInQuestion = userInQuestionStatement.get(req.body.username);
+    const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [req.body.username]);
+    const userInQuestion = rows[0];
 
     if(!userInQuestion) {
         errors = ["Invalid username or password"];
@@ -178,10 +184,10 @@ function sharedPostValidation(req) {
     return errors;
 }
 
-app.get("/edit-post/:id", mustBeLoggedIn, (req, res) => {
+app.get("/edit-post/:id", mustBeLoggedIn, async (req, res) => {
     //Try to look up the post in question
-    const statement = db.prepare("SELECT * FROM posts WHERE id = ?")
-    const post = statement.get(req.params.id)
+    const [rows] = await pool.query("SELECT * FROM posts WHERE id = ?", [req.params.id]);
+    const post = rows[0];
 
     if(!post){
             return res.redirect("/")
@@ -196,9 +202,9 @@ app.get("/edit-post/:id", mustBeLoggedIn, (req, res) => {
     res.render("edit-post", { post })
 })
 
-app.post("/edit-post/:id", mustBeLoggedIn, (req,res) => {
-    const statement = db.prepare("SELECT * FROM posts WHERE id = ?")
-    const post = statement.get(req.params.id)
+app.post("/edit-post/:id", mustBeLoggedIn, async (req,res) => {
+    const [rows] = await pool.query("SELECT * FROM posts WHERE id = ?", [req.params.id]);
+    const post = rows[0];
 
     if(!post){
             return res.redirect("/")
@@ -215,16 +221,15 @@ app.post("/edit-post/:id", mustBeLoggedIn, (req,res) => {
         return res.render("edit-post", {errors} )
     }
 
-    const updateStatement = db.prepare("UPDATE posts SET title =?, body = ? WHERE id = ?")
-    updateStatement.run(req.body.title, req.body.body, req.params.id)
+    await pool.query("UPDATE posts SET title = ?, body = ? WHERE id = ?", [req.body.title, req.body.body, req.params.id]);
 
     res.redirect(`/post/${req.params.id}`)
 
 })
 
-app.post("/delete-post/:id", mustBeLoggedIn, (req, res) => {
-    const statement = db.prepare("SELECT * FROM posts WHERE id = ?")
-    const post = statement.get(req.params.id)
+app.post("/delete-post/:id", mustBeLoggedIn, async (req, res) => {
+    const [rows] = await pool.query("SELECT * FROM posts WHERE id = ?", [req.params.id]);
+    const post = rows[0];
 
     if(!post){
             return res.redirect("/")
@@ -235,15 +240,14 @@ app.post("/delete-post/:id", mustBeLoggedIn, (req, res) => {
         return res.redirect("/")
     }
 
-    const deleteStatement = db.prepare("DELETE FROM posts WHERE id = ?")
-    deleteStatement.run(req.params.id)
+    await pool.query("DELETE FROM posts WHERE id = ?", [req.params.id]);
 
     res.redirect("/")
 })
 
-app.get("/post/:id", (req, res) => {
-    const statement = db.prepare("SELECT posts.*, users.username FROM posts INNER JOIN users ON posts.authorid = users.id WHERE posts.id = ?")
-    const post = statement.get(req.params.id)
+app.get("/post/:id", async (req, res) => {
+    const [rows] = await pool.query("SELECT posts.*, users.username FROM posts INNER JOIN users ON posts.authorid = users.id WHERE posts.id = ?", [req.params.id]);
+    const post = rows[0];
     
     //Checks if viewer is the author of the post
     const isAuthor = post.authorid === req.user.userid
@@ -255,7 +259,7 @@ app.get("/post/:id", (req, res) => {
     res.render("single-post", { post, isAuthor })
 })
 
-app.post("/create-post", mustBeLoggedIn, (req, res) => {
+app.post("/create-post", mustBeLoggedIn, async (req, res) => {
     const errors = sharedPostValidation(req)
 
     if(errors.length){
@@ -263,16 +267,18 @@ app.post("/create-post", mustBeLoggedIn, (req, res) => {
     }
 
     // Save into database
-    const ourStatement = db.prepare("INSERT INTO posts (title, genere, creator, video, body, authorid, createdDate) VALUES (?,?,?,?,?,?,?) ")
-    const result = ourStatement.run(req.body.title, req.body.genere, req.body.creator, req.body.video, req.body.body, req.user.userid, new Date().toISOString())
+    const [result] = await pool.query(
+        "INSERT INTO posts (title, genere, creator, video, body, authorid, createdDate) VALUES (?,?,?,?,?,?,?)",
+        [req.body.title, req.body.genere, req.body.creator, req.body.video, req.body.body, req.user.userid, new Date().toISOString()]
+    );
 
-    const getPostStatement = db.prepare("SELECT * FROM posts WHERE ROWID = ?")
-    const realPost = getPostStatement.get(result.lastInsertRowid)
+    const [rows] = await pool.query("SELECT * FROM posts WHERE id = ?", [result.insertId]);
+    const realPost = rows[0];
 
-    res.redirect(`/post/${realPost.id}`)
+    res.redirect(`/post/${realPost.id}`);
 })
 
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
     // Registration logic here
     const errors = [];
 
@@ -287,8 +293,8 @@ app.post("/register", (req, res) => {
     if(req.body.username && !req.body.username.match(/^[a-zA-Z0-9]+$/)) errors.push("Username contains invalid characters");
 
     //Check if username exists already
-    const usernameCheckStatement = db.prepare("SELECT * FROM users WHERE username = ?");
-    const usernameCheck = usernameCheckStatement.get(req.body.username);
+    const [usernameRows] = await pool.query("SELECT * FROM users WHERE username = ?", [req.body.username]);
+    const usernameCheck = usernameRows[0];
 
     if (usernameCheck){
         errors.push("Username is already taken");
@@ -306,12 +312,9 @@ app.post("/register", (req, res) => {
     const salt = bycrypt.genSaltSync(10);
     req.body.password = bycrypt.hashSync(req.body.password, salt);
 
-    const ourStatement = db.prepare("INSERT INTO users (username, password) VALUES (?, ?)")
-    const result = ourStatement.run(req.body.username, req.body.password);
-    
-    const lookupStatement = db.prepare("SELECT * FROM users WHERE id = ?");
-    const ourUser = lookupStatement.get(result.lastInsertRowid); // How to Recieve from daatbse
-
+    const [result] = await pool.query("INSERT INTO users (username, password) VALUES (?, ?)", [req.body.username, req.body.password]);
+    const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [result.insertId]);
+    const ourUser = rows[0];
     //Log the user in by giving them a cookie
     const ourTokenValue = jwt.sign({exp: Math.floor(Date.now()/1000) + 60 * 60  * 24, skyColor: "blue", userid: ourUser.id, username: ourUser.username},process.env.JWTSECRET)
 
