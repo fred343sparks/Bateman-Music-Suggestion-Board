@@ -18,12 +18,20 @@ const poolConfig = {
     queueLimit: 0
 };
 
-// If running on App Engine with Cloud SQL, prefer the Unix socket path
-if (process.env.INSTANCE_CONNECTION_NAME) {
+// If running on App Engine with Cloud SQL, prefer the Unix socket path.
+// Ignore un-replaced placeholder values like "PROJECT_ID:REGION:INSTANCE_NAME".
+if (
+    process.env.INSTANCE_CONNECTION_NAME &&
+    !process.env.INSTANCE_CONNECTION_NAME.includes('PROJECT_ID') &&
+    !process.env.INSTANCE_CONNECTION_NAME.includes('INSTANCE_NAME')
+) {
     poolConfig.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
 } else if (process.env.DB_HOST) {
     poolConfig.host = process.env.DB_HOST;
 } else {
+    if (process.env.INSTANCE_CONNECTION_NAME) {
+        console.warn('WARNING: INSTANCE_CONNECTION_NAME looks like a placeholder; falling back to localhost. Replace with your real Cloud SQL instance name in app.yaml.');
+    }
     poolConfig.host = 'localhost';
 }
 

@@ -10,7 +10,7 @@ service: default
 # Replace the placeholder below with your Cloud SQL instance connection name
 # Format: PROJECT_ID:REGION:INSTANCE_NAME
 beta_settings:
-  cloud_sql_instances: "PROJECT_ID:REGION:INSTANCE_NAME"
+  cloud_sql_instances: "project-fcfa687c-61c0-40b2-a8f:us-central1:free-trial-first-project"
 
 # Environment variables for DB connection. For production, prefer Secret Manager
 # and reference secrets through the Cloud Console rather than storing them here.
@@ -18,7 +18,7 @@ env_variables:
   DB_USER: "root"
   DB_PASS: "fappah"
   DB_NAME: "batemanboard"
-  INSTANCE_CONNECTION_NAME: "PROJECT_ID:REGION:INSTANCE_NAME"
+  INSTANCE_CONNECTION_NAME: "project-fcfa687c-61c0-40b2-a8f:us-central1:free-trial-first-project"
 
 # Local dev notes:
 # - To develop locally with Cloud SQL, run the Cloud SQL Auth Proxy and set
